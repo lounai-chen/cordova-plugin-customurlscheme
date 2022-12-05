@@ -10,19 +10,7 @@
 [downloads-image]:http://img.shields.io/npm/dm/cordova-plugin-customurlscheme.svg
 [twitter-image]:https://img.shields.io/twitter/follow/eddyverbruggen.svg?style=social&label=Follow%20me
 [twitter-url]:https://twitter.com/eddyverbruggen
-
-1. [Description](https://github.com/EddyVerbruggen/Custom-URL-scheme#1-description)
-2. [Installation](https://github.com/EddyVerbruggen/Custom-URL-scheme#2-installation)
-	1. [Automatically (CLI / Plugman)](https://github.com/EddyVerbruggen/Custom-URL-scheme#automatically-cli--plugman)
-	2. [Manually](https://github.com/EddyVerbruggen/Custom-URL-scheme#manually)
-	3. [PhoneGap Build](https://github.com/EddyVerbruggen/Custom-URL-scheme#phonegap-build)
-3. [Usage](https://github.com/EddyVerbruggen/Custom-URL-scheme#3-usage)
-	1. [iOS](https://github.com/EddyVerbruggen/Custom-URL-scheme#ios-usage)
-	2. [Meteor](https://github.com/EddyVerbruggen/Custom-URL-scheme#meteor--getlastintent-android-only)
-4. [URL Scheme hints](https://github.com/EddyVerbruggen/Custom-URL-scheme#4-url-scheme-hints)
-5. [License](https://github.com/EddyVerbruggen/Custom-URL-scheme#5-license)
-
-
+ 
 ### BEWARE: 
 ### - [This Apache Cordova issue](https://issues.apache.org/jira/browse/CB-7606) causes problems with Cordova-iOS 3.7.0: the `handleOpenURL` function is not invoked upon cold start. Use a higher or lower version than 3.7.0.
 ### - As of iOS 9.2, the dialog `Open in "mycoolapp"?` no longer blocks JS, so if you have a short timeout that opens the app store, the user will be taken to the store before they have a chance to see and answer the dialog. [See below](https://github.com/EddyVerbruggen/Custom-URL-scheme#ios-usage) for available solutions.
@@ -53,93 +41,13 @@ This plugin allows you to start your app by calling it with a URL like `mycoolap
 LaunchMyApp is compatible with [Cordova Plugman](https://github.com/apache/cordova-plugman).
 Replace `mycoolapp` by a nice scheme you want to have your app listen to:
 
-Latest release on npm:
-```
-$ cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=mycoolapp
-```
-
+ 
 Bleeding edge master version from Github:
 ```
-$ cordova plugin add https://github.com/EddyVerbruggen/Custom-URL-scheme.git --variable URL_SCHEME=mycoolapp
+$ cordova plugin add https://github.com/lounai-chen/cordova-plugin-customurlscheme.git --variable URL_SCHEME=mycoolapp
 ```
-(Note that the Phonegap CLI didn't support `--variable` before version 3.6.3, so please use the Cordova CLI as shown above in case you're on an older version)
-
-The LaunchMyApp.js file is brought in automatically.
-
-Note for iOS: there was a bug in CLI which caused an error in your `*-Info.plist`.
-Please manually remove the blank line and whitespace (if any) from `NSMainNibFile` and `NSMainNibFile~ipad` (or your app won't start at all).
-
-
-### Manually
-Don't shoot yourself in the foot - use the CLI! That being said, here goes:
-
-#### iOS
-1\. `Copy www/ios/LaunchMyApp.js` to `www/js/plugins/LaunchMyApp.js` and reference it in your `index.html`:
-```html
-<script type="text/javascript" src="js/plugins/LaunchMyApp.js"></script>
-```
-
-2\. Add this to your `*-Info.plist` (replace `URL_SCHEME` by a nice scheme you want to have your app listen to, like `mycoolapp`):
-```xml
-<key>CFBundleURLTypes</key>
-<array>
-  <dict>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>URL_SCHEME</string>
-    </array>
-  </dict>
-</array>
-```
-
-#### Android
-1\. Copy www/android/LaunchMyApp.js to www/js/plugins/LaunchMyApp.js and reference it in your `index.html`:
-```html
-<script type="text/javascript" src="js/plugins/LaunchMyApp.js"></script>
-```
-
-2\. Add the following xml to your `config.xml` to always use the latest version of this plugin:
-```xml
-<plugin name="LaunchMyApp" value="nl.xservices.plugins.LaunchMyApp"/>
-```
-
-3\. Copy `LaunchMyApp.java` to `platforms/android/src/nl/xservices/plugins` (create the folders)
-
-4\. Add the following to your `AndroidManifest.xml` inside the `/manifest/application/activity` node (replace `URL_SCHEME` by a nice scheme you want to have your app listen to, like `mycoolapp`):
-```xml
-<intent-filter>
-  <data android:scheme="URL_SCHEME"/>
-  <action android:name="android.intent.action.VIEW" />
-  <category android:name="android.intent.category.DEFAULT" />
-  <category android:name="android.intent.category.BROWSABLE" />
-</intent-filter>
-```
-
-5\. In `AndroidManifest.xml` set the launchMode to singleTask to avoid issues like [#24]. `<activity android:launchMode="singleTask" ..`
-
-### PhoneGap Build
-
-Using LaunchMyApp with PhoneGap Build requires you to add the following xml to your `config.xml` to use the latest version of this plugin (replace `mycoolapp` by a nice scheme you want to have your app listen to):
-```xml
-<gap:plugin name="cordova-plugin-customurlscheme" source="npm">
-  <param name="URL_SCHEME" value="mycoolapp" />
-</gap:plugin>
-```
-
-The LaunchMyApp.js file is brought in automatically.
-
-NOTE: When Hydration is enabled at PGB, this plugin may not work.
-
-### Restoring cordova plugin settings on plugin add or update
-In order to be able to restore the plugin settings on `cordova plugin add`, one need to add the following feature into config.xml. Note that if you added the plugin with the `--save` param you will find this in your `config.xml` already, except for the `variable` tag which is likely a `param` tag. [Change that.](https://github.com/EddyVerbruggen/Custom-URL-scheme/issues/76)
-```xml
-  <feature name="Custom URL scheme">
-    <param name="id" value="cordova-plugin-customurlscheme" />
-    <param name="url" value="https://github.com/EddyVerbruggen/Custom-URL-scheme.git" />
-    <variable name="URL_SCHEME" value="mycoolapp" /><!-- change as appropriate -->
-  </feature>
-```
-
+ 
+ 
 Please notice that URL_SCHEME is saved as `variable`, not as `prop`. However if you do `cordova plugin add` with a --save option, cordova will write the URL_SCHEME as a `prop`, you need to change the tag name from `param` to `variable` in this case.
 
 These plugin restore instructions are tested on:
@@ -221,25 +129,4 @@ Please choose a URL_SCHEME which which complies to these restrictions:
 
 TIP: test your scheme by installing the app on a device or simulator and typing yourscheme:// in the browser URL bar, or create a test HTML page with a link to your app to impress your buddies.
 
-
-## 5. License
-
-[The MIT License (MIT)](http://www.opensource.org/licenses/mit-license.html)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+ 
